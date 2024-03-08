@@ -1,26 +1,28 @@
-#include <iostream>
+#include<iostream>
+#include<vector>
 #include <algorithm>
 
 using namespace std;
 
 int N, M;
-int first[9];
-int arr[9];
-bool visited[9];
+int input[9];
+vector<int> arr;
+bool vis[9];
 
-void dfs(int num, int k) { 
+void dfs(int k) { 
     if (k == M) {
-        for (auto i = 0; i < M; i++)// 배운거 활용
+        for (auto i = 0; i < M; ++i)// 배운거 활용
             cout << arr[i] << " "; 
         cout << "\n";
     }
     else { 
-        for (auto i = 1; i <= N; i++) { 
-            if (!visited[i]) { 
-                visited[i] = true; 
-                arr[k] = first[i - 1]; 
-                dfs(i + 1, k + 1); 
-                visited[i] = false; 
+        for (auto i = 1; i <= N; ++i) { 
+            if (!vis[i]) { 
+                vis[i] = true; 
+                arr.push_back(input[i-1]);
+                dfs(k + 1); 
+                arr.pop_back();
+                vis[i] = false; 
             }
         }
     }
@@ -29,10 +31,10 @@ void dfs(int num, int k) {
 int main() {
     cin >> N >> M;
 
-    for (int i = 0; i < N; i++)
-        cin >> first[i];
+    for (auto i = 0; i < N; ++i)
+        cin >> input[i];
 
-    sort(first, first + N); //정렬
+    sort(input, input + N); //정렬
 
-    dfs(1, 0);
+    dfs(0);
 }
