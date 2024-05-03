@@ -1,47 +1,47 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include<iostream>
+#include<vector>
+#include<algorithm>
 
 using namespace std;
+int N, C, st, en, mid, result, router,last;
+int dohyeon = 0;
 
-int main(void)
-{
-	int n, c, num, st, router, start, end, mid, ans = 0;
-	cin >> n >> c;
-	vector<int> pos;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> num;
-		pos.push_back(num);
+
+int main(void) {
+	cin.tie(NULL)->sync_with_stdio(false);
+
+	cin >> N >> C;
+
+	vector<int> arr(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> arr[i];
 	}
-	sort(pos.begin(), pos.end());
-	start = 1;                             // 최소 거리
-	end = pos[n - 1] - pos[0];             // 최대 거리
 
-	while (start <= end)
-	{
+	sort(arr.begin(), arr.end());
+
+	st = 1;
+	en = arr[N - 1] - arr[0];
+
+	while (st <= en) {
 		router = 1;
-		mid = (start + end) / 2;
-		st = pos[0];
+		mid = (st + en) / 2;
+		last = arr[0];
 
-		for (int i = 1; i < n; i++)
-		{
-			if (pos[i] - st >= mid)
-			{
+		for (int i = 1; i < N; ++i) {
+			if (arr[i] - last >= mid) {
 				router++;
-				st = pos[i];
+				last = arr[i];
 			}
 		}
-
-		if (router >= c)
-		{
-			ans = max(ans, mid);
-			start = mid + 1;
+		if (router >= C) {
+			result = max(result, mid);
+			st = mid + 1;
 		}
-
 		else
-			end = mid - 1;
+			en = mid - 1;
 	}
-	cout << ans;
+
+	cout << result << '\n';
+
 	return 0;
 }
