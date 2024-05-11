@@ -35,9 +35,10 @@ int main() {
 	sort(v.begin(), v.end());
 	for (int i = 1; i <= V; i++)parent[i] = i;
 	for (int i = 0; i < v.size(); i++) {
-		if (!sameparent(get<1>(v[i]), get<2>(v[i]))) {
-			Union(get<1>(v[i]), get<2>(v[i]));
-			result += get<0>(v[i]);
+		auto& [a, b, c] = v[i];
+		if (find(b)!=find(c)) {
+			Union(b, c);
+			result += a;
 		}
 	}
 	cout << result;
