@@ -16,6 +16,8 @@ int dijkstra(int x, int y) {
 	d[x] = 0;
 	while (!pq.empty()) {
 		auto [dist,cur] = pq.top(); pq.pop();
+
+		if (dist > d[cur]) continue;
 		for (int i = 0; i < adj[cur].size(); i++) {
 			auto[ ndist,next] = adj[cur][i];
 			if (d[next] > dist + ndist) {
