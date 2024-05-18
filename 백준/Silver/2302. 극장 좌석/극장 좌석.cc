@@ -9,7 +9,7 @@ int N, M;
 int dp[45];
 vector<int> mvp;
 vector<long long> results;
-long long result=1;
+int result=1;
 
 int main(void) {
 	cin.tie(NULL)->sync_with_stdio(false);
