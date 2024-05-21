@@ -14,14 +14,13 @@ int main(void) {
 	cin.tie(NULL)->sync_with_stdio(false);
 
 	cin >> N >> M;
+	ll st = 0;
+	ll en = 0;
 	for (int i = 0; i < N; ++i) {
 		cin >> tree[i];
+		en = max(en, tree[i]);
 	}
-
-	sort(tree, tree + N);
-
-	ll st = 0;
-	ll en = tree[N - 1];
+	
 	while (st <= en) {
 		ll sum = 0;
 		ll mid = (st + en) / 2;
