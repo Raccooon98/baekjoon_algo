@@ -1,4 +1,3 @@
-//n 1일때 1, 2일때 2, 3일때 3, 4일때 
 #include<iostream>
 #include<algorithm>
 #include<vector>
@@ -16,7 +15,7 @@ int main(void) {
 		dp[i] = i;
 	}
 
-	for (int i = 1; i <= MAX; ++i) {
+	for (int i = 1; i <= N; ++i) {
 		for (int j = 1; j * j <= i; ++j){
 			dp[i] = min(dp[i], dp[i - j * j] + 1);
 		}
