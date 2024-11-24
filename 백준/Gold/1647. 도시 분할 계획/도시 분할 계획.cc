@@ -63,7 +63,7 @@ int main(void) {
     }
 
     for (int i = 0; i < v.size() - 1; ++i)
-        result = result + v[i];
+        result += v[i];
     cout << result << '\n';
 
     return 0;
