@@ -34,7 +34,7 @@ int main()
         }
     }
 
-    for (int i = 0; i <= 300; ++i) {
+    for (int i = 0; i <= p; ++i) {
         int asize = (int)arr[i].size();
         if (asize == 0) {
             continue;
