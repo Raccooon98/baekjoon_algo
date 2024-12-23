@@ -1,34 +1,40 @@
 #include <iostream>
-#include <vector>
+#include<algorithm>
+#include<vector>
 using namespace std;
-const int MAX = 100'001;
+const int MAX = 100001;
 
+int N, R, Q;
 vector<int> v[MAX];
 bool vis[MAX];
 int arr[MAX];
-int N, R, Q, U, V;
 
 int DFS(int n) {
-	if (arr[n] != 0) return arr[n];
-	vis[n] = 1;
-	int val = 1;
+	if (arr[n] != 0)
+		return arr[n];
 
-	for (auto a : v[n]) {
-		int nxt = a;
-		if (vis[nxt])continue;
-		val += DFS(nxt);
+	vis[n] = true;
+	int num = 1;
+
+	for (auto next : v[n]) {
+		if (vis[next])
+			continue;
+		num += DFS(next);
 	}
 
-	arr[n] = val;
-	return val;
+	arr[n] = num;
+
+	return num;
 }
 
-int main(void) {
+int main(void)
+{
 	cin.tie(NULL)->sync_with_stdio(false);
 
 	cin >> N >> R >> Q;
 
-	for (int i = 0; i < N-1; ++i) {
+	for (int i = 0; i < N - 1; ++i) {
+		int U, V;
 		cin >> U >> V;
 		v[U].push_back(V);
 		v[V].push_back(U);
@@ -36,8 +42,9 @@ int main(void) {
 
 	arr[R] = DFS(R);
 	for (int i = 0; i < Q; ++i) {
+		int U;
 		cin >> U;
-		cout << arr[U] << '\n';
+		cout << arr[U]<<'\n';
 	}
 
 	return 0;
