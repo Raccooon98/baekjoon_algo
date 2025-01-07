@@ -1,9 +1,10 @@
+//이름부터 그냥 플로이드 워셜 최단거리 문제임
 #include<iostream>
 #include<vector>
 #include<algorithm>
+const int INF = 0x3f3f3f3f;
 using namespace std;
 
-const int INF = 0x3f3f3f3f;
 int d[105][105];
 int N, M;
 
@@ -14,6 +15,7 @@ int main(void) {
 	for (int i = 1; i <= N; ++i) {
 		fill(d[i], d[i] + 1 + N, INF);
 	}
+
 	for (int m = 0; m < M; ++m) {
 		int a, b, c;
 		cin >> a >> b >> c;
@@ -34,4 +36,6 @@ int main(void) {
 		}
 		cout << '\n';
 	}
+
+	return 0;
 }
