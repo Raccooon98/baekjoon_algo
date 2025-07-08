@@ -16,21 +16,16 @@ public class Main {
 
         for(int i=0;i<N;i++){
             st = new StringTokenizer(br.readLine());
-            int S = Integer.parseInt(st.nextToken());
-            int Y = Integer.parseInt(st.nextToken());
+            S = Integer.parseInt(st.nextToken());
+            Y = Integer.parseInt(st.nextToken());
             gender[S][Y]++;
         }
 
         int count=0;
         for(int i=0;i<2;i++){
             for(int j=1;j<7;j++){
-                if(gender[i][j]>K){
-                    count+=gender[i][j]/K+1;
-                } else if (gender[i][j]==0) {
-                    continue;
-                }
-                else {
-                    count++;
+                if(gender[i][j]>0){
+                    count+=(gender[i][j]+K-1)/K;
                 }
             }
         }
