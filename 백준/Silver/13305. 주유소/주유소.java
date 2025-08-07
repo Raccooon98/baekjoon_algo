@@ -4,24 +4,24 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static int cost[], dist[];
+    static long cost[], dist[];
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        cost = new int[N+1];
-        dist = new int[N+1];
+        cost = new long[N+1];
+        dist = new long[N+1];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=1;i<=N-1;i++){
-            dist[i] = Integer.parseInt(st.nextToken());
+            dist[i] = Long.parseLong(st.nextToken());
         }
 
         st = new StringTokenizer(br.readLine());
         for(int i=1;i<=N;i++){
-            cost[i] = Integer.parseInt(st.nextToken());
+            cost[i] = Long.parseLong(st.nextToken());
         }
 
-        int sum=0, mincost=cost[1];
+        long sum=0, mincost=cost[1];
 
         for(int i=1;i<N;i++){
             if(cost[i]<mincost){
