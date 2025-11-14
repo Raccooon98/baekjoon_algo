@@ -3,23 +3,33 @@ import java.io.*;
 
 class Solution {
     public int solution(int[] players, int m, int k) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1,o2) -> o1[0] - o2[0]);
+        PriorityQueue<INFO> pq = new PriorityQueue<>((o1, o2) -> o1.endTime - o2.endTime);
         int size = 0;  // 현재 서버의 개수 
         int count = 0; // 증설된 서버 횟수  
         for(int i = 0; i < 24; i++){
-            // 만료된 서버 내리기 
-            while(!pq.isEmpty() && pq.peek()[0] == i){
-                size -= pq.poll()[1];
+            
+            while(!pq.isEmpty() && pq.peek().endTime==i){
+                size -= pq.poll().num;
             }
-            int need = players[i] / m;  // 현재 필요한 서버의 개수 
-            int more = size - need;     // - 서버 증설 개수  
-            if(more < 0){
+            
+            int need = players[i] / m;
+            int more = size-need;
+            
+            if(more<0){
                 more = -more;
-                size  += more;
+                size +=more;
                 count += more;
-                pq.add(new int []{i + k, more});
+                pq.offer(new INFO(i + k , more));
             }
         }
         return count;
+    }
+    private static class INFO{
+        int endTime, num;
+        
+        public INFO(int t,int n){
+            this.endTime = t;
+            this.num = n;
+        }
     }
 }
