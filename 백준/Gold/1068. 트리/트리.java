@@ -2,67 +2,57 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static ArrayList<Integer> tree[];
-    static boolean remove_check[];
-    static int cnt = 0;
+    static int N, ans = 0;
+    static ArrayList<Integer>[] tree;
+    static boolean[] isDeleted;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        tree = new ArrayList[N];
-        remove_check = new boolean[N];
-
-        for (int i = 0; i < N; i++) {
+        isDeleted = new boolean[N + 1];
+        tree = new ArrayList[N + 1];
+        for (int i = 0; i <= N; i++) {
             tree[i] = new ArrayList<>();
         }
+
         int root = 0;
         for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            if (num == -1)
-                root = i;
-            else
-                tree[num].add(i);
+            int n = Integer.parseInt(st.nextToken());
+            if (n == -1) root = i;
+            else tree[n].add(i);
         }
 
         int D = Integer.parseInt(br.readLine());
 
-        if (D == root) {
-            System.out.println(0);
-            System.exit(0);
-        }
-
         removeNode(D);
-        cntNode(root);
+        countNode(root);
 
-        System.out.println(cnt);
+        System.out.println(ans);
     }
 
-    private static void removeNode(int d) {
-        remove_check[d] = true;
-
-        for (int cur : tree[d]) {
-            removeNode(cur);
+    static void removeNode(int n) {
+        isDeleted[n] = true;
+        for (int next : tree[n]) {
+            removeNode(next);
         }
     }
 
-    private static void cntNode(int node) {
-        if (remove_check[node]) {
+    static void countNode(int node) {
+        if(isDeleted[node]){
             return;
         }
 
-        boolean isleaf = true;
-        for (int cur : tree[node]) {
-            if (!remove_check[cur]) {
-                isleaf = false;
-                cntNode(cur);
+        boolean isLeaf = true;
+        for(int cur: tree[node]){
+            if(!isDeleted[cur]){
+                isLeaf=false;
+                countNode(cur);
             }
         }
 
-        if (isleaf) {
-            cnt++;
-        }
+        if(isLeaf)
+            ans++;
     }
 }
