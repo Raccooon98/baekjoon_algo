@@ -2,39 +2,53 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static String A, B;
+    static int alen, blen;
+    static int[][] dp;
+    static int max;
+    static char[] s1, s2;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        char[] S1 = br.readLine().trim().toCharArray();
-        char[] S2 = br.readLine().trim().toCharArray();
-        int[][] lcs = new int[S1.length + 1][S2.length + 1];
+        StringBuilder sb= new StringBuilder();
 
-        for (int i = 1; i <= S1.length; i++) {
-            for (int j = 1; j <= S2.length; j++) {
-                if (S1[i - 1] == S2[j - 1]) {
-                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
-                } else if (lcs[i][j - 1] < lcs[i - 1][j]) {
-                    lcs[i][j] = lcs[i - 1][j];
+        A = br.readLine();
+        B = br.readLine();
+        s1 = A.toCharArray();
+        s2 = B.toCharArray();
+        alen = A.length();
+        blen = B.length();
+
+        dp = new int[alen + 1][blen + 1];
+
+        max = dp[0][0];
+
+        for (int i = 1; i <= alen; i++) {
+            for (int j = 1; j <= blen; j++) {
+                if (s1[i - 1] == s2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else if (dp[i][j - 1] < dp[i - 1][j]) {
+                    dp[i][j] = dp[i - 1][j];
                 } else {
-                    lcs[i][j] = lcs[i][j - 1];
+                    dp[i][j] = dp[i][j - 1];
                 }
             }
         }
 
-        int s1 = S1.length;
-        int s2 = S2.length;
-
-        while (0 < lcs[s1][s2]) {
-            if (lcs[s1][s2] == lcs[s1][s2 - 1]) {
-                s2--;
-            } else if (lcs[s1][s2] == lcs[s1 - 1][s2]) {
-                s1--;
-            } else {
-                sb.append(S1[--s1]);
-                s2--;
+        int a = s1.length;
+        int b = s2.length;
+        while (0 < dp[a][b]) {
+            if(dp[a][b] == dp[a][b-1]){
+                b--;
+            }else if(dp[a][b] == dp[a-1][b]){
+                a--;
+            }else{
+                sb.append(s1[--a]);
+                b--;
             }
         }
-        System.out.println(lcs[S1.length][S2.length]);
-        System.out.println(sb.reverse());
+
+        System.out.println(dp[alen][blen]);
+        System.out.println(sb.reverse().toString());
     }
 }
