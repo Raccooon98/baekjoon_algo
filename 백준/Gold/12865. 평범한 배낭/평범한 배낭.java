@@ -1,43 +1,50 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static int N, K;
+    static int[][] dp;
+    static Bag[] bags;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		int maxweight = sc.nextInt();
-		sc.nextLine();
-		int[] dp = new int[maxweight+1];
-		item[] items = new item[N+1]; 
-		
-		for(int i=1;i<=N;++i) {
-			int a,b;
-			a=sc.nextInt();
-			b=sc.nextInt();
-			sc.nextLine();
-			
-			items[i] = new item(a,b);
-		}
-		
-		for(int i=1;i<=N;++i) {
-			for(int j=maxweight;j>=items[i].weight;j--) {
-				dp[j] = Math.max(dp[j], dp[j-items[i].weight]+items[i].value);
-			}
-		}
-		System.out.println(dp[maxweight]);
-	}
-	
-	
-	//item 정보 담을 클래스(구죠체같은 느김)
-	public static class item{
-		int weight;
-		int value;
-		
-		item(int weight,int value){
-			this.weight = weight;
-			this.value = value;
-		}
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        bags = new Bag[N + 1];
+        dp = new int[N + 1][K + 1];
+
+        for (int i = 1; i <= N; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            int w = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            bags[i] = new Bag(w, v);
+        }
+
+        for (int i = 1; i <= K; i++) {
+            for (int j = 1; j <= N; j++) {
+
+                dp[j][i] = dp[j - 1][i];
+
+                if (i - bags[j].w >= 0) {
+                    dp[j][i] = Math.max(dp[j - 1][i], bags[j].v + dp[j - 1][i - bags[j].w]);
+                }
+            }
+        }
+
+        System.out.println(dp[N][K]);
+    }
+
+    private static class Bag {
+        int w, v;
+
+        public Bag(int w, int v) {
+            this.w = w;
+            this.v = v;
+        }
+    }
 }
