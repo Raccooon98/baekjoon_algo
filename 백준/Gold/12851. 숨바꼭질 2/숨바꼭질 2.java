@@ -1,47 +1,63 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int[] dist = new int[100002];
-    static int[] cnt = new int[100002];
-    static Queue<Integer> q = new LinkedList<>();
+    static StringBuilder sb = new StringBuilder();
+    static int N, K, count = 0, min = Integer.MAX_VALUE;
+    static int[] vis = new int[100001];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] input = br.readLine().split(" ");
-        int n = Integer.parseInt(input[0]);
-        int k = Integer.parseInt(input[1]);
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        if (n == k) {
-            System.out.println("0\n1");
-            return;
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        if (N == K) {
+            System.out.println(0);
+            System.out.println(1);
+        } else if (N > K) {
+            System.out.println(N - K);
+            System.out.println(1);
+        } else {
+            BFS();
+            sb.append(min).append("\n").append(count);
+            System.out.println(sb.toString());
         }
+    }
 
-        Arrays.fill(dist, -1);
-        dist[n] = 0;
-        cnt[n] = 1;
-        q.add(n);
+    static void BFS() {
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(N);
+        vis[N] = 1;
 
         while (!q.isEmpty()) {
             int cur = q.poll();
-            for (int nx : new int[]{cur + 1, cur - 1, cur * 2}) {
-                if (nx < 0 || nx > 100000) continue;
-                if (dist[nx] != -1) { // Already visited
-                    if (dist[cur] + 1 == dist[nx]) // Same shortest distance
-                        cnt[nx] += cnt[cur];
-                } else { // First visit
-                    dist[nx] = dist[cur] + 1; // Update shortest distance
-                    cnt[nx] = cnt[cur];
-                    q.add(nx);
+            if (min < vis[cur]) continue;
+
+            for (int i = 0; i < 3; i++) {
+                int next = 0;
+                if (i == 0) {
+                    next = cur + 1;
+                } else if (i == 1) {
+                    next = cur - 1;
+                } else if (i == 2) {
+                    next = cur * 2;
+                }
+
+                if (next < 0 || next >= 100001) continue;
+                if (next == K) {
+                    if (vis[cur] >= min) {
+                        count++;
+                    } else {
+                        min = vis[cur];
+                        count = 1;
+                    }
+                } else if (vis[next] == 0 || vis[next] >= vis[cur] + 1) {
+                    q.offer(next);
+                    vis[next] = vis[cur] + 1;
                 }
             }
         }
-
-        System.out.println(dist[k]);
-        System.out.println(cnt[k]);
     }
 }
