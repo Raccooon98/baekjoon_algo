@@ -2,33 +2,36 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static String input, bomb;
+    static String input, target;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         input = br.readLine();
-        bomb = br.readLine();
-        int blen = bomb.length();
+        target = br.readLine();
+        int targetLen = target.length();
+
         StringBuilder sb = new StringBuilder();
 
         for (char c : input.toCharArray()) {
             sb.append(c);
 
-            if (sb.length() >= blen) {
-                boolean match = true;
-                for (int i = 0; i < blen; i++) {
-                    if (sb.charAt(sb.length() - blen + i) != bomb.charAt(i)) {
-                        match = false;
+            if (sb.length() >= targetLen) {
+                boolean check = true;
+
+                for (int i = 0; i < targetLen; i++) {
+                    if (sb.charAt(sb.length() - targetLen + i) != target.charAt(i)) {
+                        check = false;
                         break;
                     }
                 }
 
-                if (match) {
-                    sb.setLength(sb.length() - blen);
+                if (check) {
+                    sb.setLength(sb.length() - targetLen);
                 }
             }
         }
 
-        System.out.println(sb.length() == 0 ? "FRULA" : sb);
+        System.out.println(sb.length() == 0 ? "FRULA" : sb.toString());
     }
 }
