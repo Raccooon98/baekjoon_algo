@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static int[] arr;
+    static List<Integer> arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -11,15 +11,15 @@ public class Main {
         StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(st.nextToken());
-        arr = new int[N];
+        arr = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             int n = Integer.parseInt(st.nextToken());
 
-            arr[i] = n;
+            arr.add(n);
         }
 
-        Arrays.sort(arr);
+        Collections.sort(arr);
 
         for (int n : arr) {
             sb.append(n).append("\n");
