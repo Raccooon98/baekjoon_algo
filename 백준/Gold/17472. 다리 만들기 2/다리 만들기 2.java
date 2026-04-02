@@ -1,142 +1,165 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N, M, result = 0;
-    static int[][] Map;
+    static int N, M;
+    static int[][] board;
     static boolean[][] vis;
-    static int[] parent;
-    static int[] dx = {1, -1, 0, 0};
-    static int[] dy = {0, 0, 1, -1};
+    static PriorityQueue<Node> pq = new PriorityQueue<>();
+    static int[] parent, rank;
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
 
-    static List<int[]> bridge = new ArrayList<>();
-    static List<int[]> v = new ArrayList<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-    static int find(int a) {
-        if (parent[a] == a) return a;
-        return parent[a] = find(parent[a]);
-    }
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-    static void union(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a != b) {
-            if (a < b) parent[b] = a;
-            else parent[a] = b;
+        board = new int[N][M];
+        vis = new boolean[N][M];
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            for (int j = 0; j < M; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                if (board[i][j] == 1) board[i][j] = -1;
+            }
         }
+
+        int count = 1;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (board[i][j] == -1 && !vis[i][j]) {
+                    maskMap(count, i, j);
+                    count++;
+                }
+            }
+        }
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (board[i][j] > 0) {
+                    for (int d = 0; d < 4; d++) {
+                        findBridge(i, j, d, board[i][j]);
+                    }
+                }
+            }
+        }
+
+        parent = new int[count];
+        rank = new int[count];
+        for (int i = 1; i < count; i++) {
+            parent[i] = i;
+        }
+
+        int cnt = 0;
+        int ans = 0;
+        while (!pq.isEmpty()) {
+            Node cur = pq.poll();
+
+            if (union(cur.from, cur.to)) {
+                ans += cur.cost;
+                cnt++;
+            }
+        }
+
+        if (cnt == count - 2) {
+            System.out.println(ans);
+        }else{
+            System.out.println(-1);
+        }
+
     }
 
-    static boolean sameParent(int a, int b) {
-        return find(a) == find(b);
-    }
-
-    // 각 섬에 번호 매기기
-    static void countIsland(int x, int y, int num) {
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{x, y});
-        vis[x][y] = true;
-        Map[x][y] = num;
+    //맵에 섬별로 마스킹 하기
+    static void maskMap(int num, int x, int y) {
+        Queue<int[]> q = new ArrayDeque<>();
+        q.offer(new int[]{x, y});
 
         while (!q.isEmpty()) {
-            int[] curr = q.poll();
-            int cx = curr[0], cy = curr[1];
+            int[] cur = q.poll();
+            int cx = cur[0];
+            int cy = cur[1];
+            board[cx][cy] = num;
+            vis[cx][cy] = true;
 
             for (int i = 0; i < 4; i++) {
                 int nx = cx + dx[i];
                 int ny = cy + dy[i];
 
-                if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-                if (!vis[nx][ny] && Map[nx][ny] == -1) {
+                if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+                if (vis[nx][ny]) continue;
+                if (board[nx][ny] != 0 && !vis[nx][ny]) {
+                    board[nx][ny] = num;
                     vis[nx][ny] = true;
-                    Map[nx][ny] = num;
-                    q.add(new int[]{nx, ny});
+                    q.offer(new int[]{nx, ny});
                 }
             }
         }
     }
 
-    // 입력받은 방향대로 다리 만들기
-    static void makeBridge(int x, int y, int dir) {
-        int len = 0;
-        int startPoint = Map[x][y];
+    static void findBridge(int x, int y, int dir, int start) {
+        int dist = 0;
+        int nx = x;
+        int ny = y;
 
         while (true) {
-            int nx = x + dx[dir];
-            int ny = y + dy[dir];
+            nx += dx[dir];
+            ny += dy[dir];
 
-            if (nx < 0 || ny < 0 || nx >= N || ny >= M) break; // 범위 초과 검사
-            if (Map[nx][ny] == 0) {
-                x = nx;
-                y = ny;
-                len++;
-            } else if (len >= 2 && startPoint != Map[nx][ny]) {
-                if (startPoint != 0 && Map[nx][ny] != 0) { // 유효한 값인지 확인
-                    bridge.add(new int[]{len, startPoint, Map[nx][ny]});
-                }
-                break;
+            if (nx < 0 || ny < 0 || nx >= N || ny >= M) break;
+            if (board[nx][ny] == start) break;
+
+            if (board[nx][ny] == 0) {
+                dist++;
             } else {
+                if (dist >= 2) {
+                    pq.offer(new Node(start, board[nx][ny], dist));
+                }
                 break;
             }
         }
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
 
-        N = sc.nextInt();
-        M = sc.nextInt();
-        Map = new int[N][M];
-        vis = new boolean[N][M];
+    static boolean union(int a, int b) {
+        int rootA = find(a);
+        int rootB = find(b);
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                Map[i][j] = sc.nextInt();
-                if (Map[i][j] == 1) {
-                    Map[i][j] = -1;
-                    v.add(new int[]{i, j});
-                }
+        if (rootA == rootB) return false;
+        else {
+            if (rank[rootA] < rank[rootB]) {
+                parent[rootA] = rootB;
+            } else if (rank[rootB] < rank[rootA]) {
+                parent[rootB] = rootA;
+            } else {
+                parent[rootB] = rootA;
+                rank[rootA]++;
             }
+            return true;
+        }
+    }
+
+    static class Node implements Comparable<Node> {
+        int from, to;
+        int cost;
+
+        public Node(int from, int to, int cost) {
+            this.from = from;
+            this.to = to;
+            this.cost = cost;
         }
 
-        int cnt = 1;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (Map[i][j] == -1 && !vis[i][j]) {
-                    countIsland(i, j, cnt);
-                    cnt++;
-                }
-            }
+        @Override
+        public int compareTo(Node o) {
+            return this.cost - o.cost;
         }
-
-        for (int[] point : v) {
-            int x = point[0], y = point[1];
-            for (int i = 0; i < 4; i++) {
-                makeBridge(x, y, i);
-            }
-        }
-
-        bridge.sort(Comparator.comparingInt(o -> o[0])); // 다리 길이 기준으로 정렬
-
-        parent = new int[cnt + 1];
-        for (int i = 1; i <= cnt; i++) {
-            parent[i] = i; // Union-Find 초기화
-        }
-
-        for (int[] b : bridge) {
-            int len = b[0], start = b[1], dest = b[2];
-            if (!sameParent(start, dest)) {
-                union(start, dest);
-                result += len;
-            }
-        }
-
-        // 모든 섬이 연결되었는지 확인
-        for (int i = 1; i < cnt; i++) {
-            if (find(i) != find(1)) {
-                System.out.println(-1);
-                return;
-            }
-        }
-
-        System.out.println(result);
     }
 }
