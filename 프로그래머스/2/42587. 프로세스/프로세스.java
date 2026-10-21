@@ -10,21 +10,25 @@ class Solution {
             q.offer(new Pair(i,priorities[i]));
         }
         
-        int max = Collections.max(q, (a1,a2)->Integer.compare(a1.val, a2.val)).val;
         int count=0;
+        
         while(!q.isEmpty()){
             Pair cur = q.poll();
-            if(cur.val>=max){
-                count++;
-                if(cur.loc==location) return count;
-                max = Collections.max(q, (a1,a2)->Integer.compare(a1.val, a2.val)).val;
-            }else{
+            
+            boolean hasMax=false;
+            for(Pair p : q){
+                if(p.val>cur.val){
+                    hasMax=true;
+                }
+            }
+            
+            if(hasMax){
                 q.offer(cur);
+            }else{
+                count++;
+                if(cur.loc == location) return count;
             }
         }
-        
-        
-        
         
         return answer;
     }
