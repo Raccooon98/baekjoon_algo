@@ -2,11 +2,11 @@ import java.io.*;
 import java.util.*;
 
 class Solution {
-    static int T;
-    static int count=0;
+    static int T,count;
     static int[] arr;
     public int solution(int[] numbers, int target) {
         int answer = 0;
+        count=0;
         arr = numbers.clone();
         T=target;
         
