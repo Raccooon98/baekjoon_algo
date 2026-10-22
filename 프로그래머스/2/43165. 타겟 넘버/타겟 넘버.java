@@ -1,27 +1,29 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Solution {
-    static int len, T;
-    static int answer=0;
+    static int T;
+    static int count=0;
     static int[] arr;
     public int solution(int[] numbers, int target) {
-        len = numbers.length;
-        T = target;
+        int answer = 0;
         arr = numbers.clone();
+        T=target;
         
-        DFS(0,0);
+        func(0,0);
         
-        return answer;
+        return answer=count;
     }
     
-    static void DFS(int sum, int cnt){
-        if(cnt>= len){
-            if(sum == T) answer++;
+    static void func(int idx, int sum){
+        if(idx >= arr.length){
+            if(sum == T){
+                count++;
+            }
             return;
         }
         
-        DFS(sum-arr[cnt], cnt+1);
-        DFS(sum+arr[cnt], cnt+1);
+        func(idx+1,sum+arr[idx]);
+        func(idx+1,sum-arr[idx]);
     }
 }
