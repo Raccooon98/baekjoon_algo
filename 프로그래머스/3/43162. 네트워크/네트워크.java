@@ -1,45 +1,37 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Solution {
-    static boolean[] vis;
-    static int len;
-    static int[][] board;
     public int solution(int n, int[][] computers) {
         int answer = 0;
-        len = computers.length;
-        vis = new boolean[len];
-        board = computers.clone();
-        
+        boolean[] vis = new boolean[n];
         int count = 0;
-        for(int i=0;i<len;i++){
-            if(!vis[i]){
+        for(int i = 0; i < n; i++){
+            if(vis[i] == false){
+                BFS(computers, vis, i);
                 count++;
-                BFS(i);
             }
         }
         
         return count;
     }
     
-    static void BFS(int cur){
-        vis[cur] = true;
+    static void BFS(int[][] computers, boolean[] vis, int cur){
+        int len = computers.length;
         Queue<Integer> q = new ArrayDeque<>();
         q.offer(cur);
+        vis[cur]=true;
         
         while(!q.isEmpty()){
-            int now = q.poll();
+            int c = q.poll();
             
             for(int i=0;i<len;i++){
-                if(i == now) continue;
-                if(board[now][i] ==1){
-                    if(!vis[i]){
-                        q.offer(i);
-                        vis[i]=true;
-                    }
-                }
+                if(computers[c][i] != 1) continue;
+                int next = i;
+                if(vis[next]) continue;
+                q.offer(next);
+                vis[next]=true;
             }
         }
-        
     }
 }
