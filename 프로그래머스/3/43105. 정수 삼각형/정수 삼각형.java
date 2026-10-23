@@ -1,64 +1,23 @@
 import java.io.*;
 import java.util.*;
 
-// class Solution {
-//     static int[][] arr;
-//     static int len;
-//     static int max=0;
-    
-//     public int solution(int[][] triangle) {
-//         len = triangle.length;
-        
-//         arr=triangle.clone();
-        
-//         DFS(arr[0][0],0,0);
-        
-//         return max;
-//     }
-    
-//     static void DFS(int sum, int idx, int depth){
-//         if(depth>=len-1){
-//             max = Math.max(max,sum);
-//             return;
-//         }
-        
-//         DFS(sum+arr[depth+1][idx],idx,depth+1);
-//         DFS(sum+arr[depth+1][idx+1],idx+1,depth+1);
-//     }
-// }
-
-
 class Solution {
-    static int memo[][];
-    static int len;
-    
-    public int solution(int[][] triangle){
-        len = triangle.length;
-        memo = new int[len][len];
+    public int solution(int[][] triangle) {
+        int answer = 0;
+        int row = triangle.length;
+        int col = triangle[row - 1].length;
+        int[][] dp = new int[row][col];
         
-        for(int i=0;i<len;i++){
-            for(int j=0;j<len;j++){
-                memo[i][j] = -1;
+        for(int i=row-1;i>=0;i--){
+            dp[row-1][i] = triangle[row-1][i];
+        }
+        
+        for(int i = row-2;i>=0;i--){
+            for(int j=0;j<=i;j++){
+                dp[i][j] = Math.max(triangle[i][j]+dp[i+1][j],triangle[i][j]+dp[i+1][j+1]);
             }
         }
         
-        return DFS(triangle, 0,0);
-    }
-    
-    static int DFS(int[][]triangle, int depth, int idx){
-        if(depth == len - 1){
-            return triangle[depth][idx];
-        }
-        
-        if(memo[depth][idx]!=-1){
-            return memo[depth][idx];
-        }
-        
-        memo[depth][idx] = triangle[depth][idx] + Math.max(
-            DFS(triangle, depth+1,idx),
-            DFS(triangle, depth+1,idx+1)
-        );
-        
-        return memo[depth][idx];
+        return answer = dp[0][0];
     }
 }
